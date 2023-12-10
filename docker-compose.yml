@@ -1,0 +1,11 @@
+version: '3.0'
+
+
+services:
+  video-api:
+    container_name: video-api
+    build:
+      context: .
+    ports:
+      - "1323:1323"
+    
