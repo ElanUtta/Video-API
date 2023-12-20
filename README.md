@@ -1,2 +1,6 @@
-# Video-API
-A small project to handle and deliver videos stream
+
+# Video Stream
+
+A tiny program with a Backend and Front end, to work with video stram and consume it.
+
+

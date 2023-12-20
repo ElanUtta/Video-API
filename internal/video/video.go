@@ -2,46 +2,24 @@ package video
 
 import (
 	"fmt"
+	"log"
 
-	"gocv.io/x/gocv"
+	"github.com/thinkski/go-v4l2"
 )
 
 func GetVideoStream(rtspURL string) {
+	fmt.Println("GetVideoStream")
 
-	can, err := gocv.VideoCaptureFile(rtspURL)
+	device, err := v4l2.Open("/dev/video0")
 	if err != nil {
-		fmt.Printf("Error opening video capture: %v\n", err)
-		return
-	}
-	defer can.Close()
-
-	// Create a window to display the video feed
-	window := gocv.NewWindow("RTSP Video Feed")
-	defer window.Close()
-
-	img := gocv.NewMat()
-	defer img.Close()
-
-	fmt.Printf("Press 'ESC' to exit...\n")
-
-	// Read frames from the RTSP stream and display them in the window
-	for {
-		if ok := can.Read(&img); !ok {
-			fmt.Printf("Cannot read frame from video capture\n")
-			break
-		}
-
-		if img.Empty() {
-			continue
-		}
-
-		window.IMShow(img)
-		key := window.WaitKey(1)
-
-		// Check for the 'ESC' key to exit the loop
-		if key == 27 {
-			break
-		}
+		log.Fatalf("Failed to open video device: %v", err)
 	}
 
+	err = device.SetPixelFormat(1280, 720, v4l2.V4L2_PIX_FMT_H264)
+	if err != nil {
+		log.Fatalf("Failed to set pixel format: %v", err)
+	}
+
+	// Remember to close the device when you're done with it
+	defer device.Close()
 }
